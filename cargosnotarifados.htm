@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+<TITLE>Active Server Pages</TITLE>
+<style type="text/css">
+<!--
+.style1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12;
+	color: #000080;
+}
+.style9 {color: #000099}
+-->
+</style>
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+</script>
+</HEAD>
+<BODY BGCOLOR=FFFFFF>
+
+<%
+        openstr = "driver={Microsoft Access Driver (*.mdb)};" & _
+        "dbq=" & Server.MapPath("dbxsinred.mdb")
+        Set cn = Server.CreateObject("ADODB.Connection")
+        cn.Open openstr
+    
+		
+    Sql = ""
+    Sql = Sql & " Select "
+    
+    Sql = Sql & " Personas.Nombre,"
+    Sql = Sql & " Personas.PrimerApellido,"
+    Sql = Sql & " Personas.SegundoApellido,"
+    Sql = Sql & " Personas.TipodeDocumento,"
+    Sql = Sql & " Personas.Documento"
+        
+    Sql = Sql & " From "
+    Sql = Sql & " CasosAbiertos "
+    
+    Sql = Sql & " Left Join Personas on CasosAbiertos.Entidad = Personas.Entidad"
+    Sql = Sql & " WHERE CasosAbiertos.Ticket = '" & session("ClavedeIngreso") & "'"
+		 
+			  
+		 
+         Set rs = Server.CreateObject("ADODB.Recordset")
+         rs.Open sql, cn, 3, 3 
+		 
+		 if Not rs.EOF Then
+		 	xNombre = rs.Fields("Nombre")
+			xApellido = rs.fields("PrimerApellido")		 
+		  	xCedula  = rs.fields("Documento")
+		 End If
+		 
+		 Session("Medico")= request.Form("Txt_Medico")
+		 Session("Diagnostico")= request.Form("Txt_Diagnostico")
+		 
+		 rs.close
+		 Set rs = Nothing        
+		 
+		 cn.close
+		 set cn = nothing
+
+ 
+  %>
+  
+<table width="100%" border="0">
+  <tr> 
+    <td width="11%" height="24"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Clave 
+      de ingreso</font></strong></td>
+    <td width="89%"> 
+      <% response.Write(session("ClavedeIngreso"))  %>
+    </td>
+  </tr>
+  <tr> 
+    <td><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Nombre 
+      y Apellido</font></strong></td>
+    <td><% = xNombre & " " & xapellido %> </td>
+  </tr>
+  <tr> 
+    <td height="23"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Cedula:</font></strong></td>
+    <td><% = xcedula %></td>
+  </tr>
+</table>
+
+
+<p>&nbsp;</p>
+<div id="Layer1" style="position:absolute; width:450px; height:115px; z-index:1; left: 11px; top: 102px;"> 
+  <form name="Actualizar" method="post" action="../sitio%20local/actualizardiagnosticodelcaso.asp">
+    <table width="46%" border="0" >
+      <tr> 
+        <td width="46%" height="24"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Fecha</font></strong></td>
+        <td width="54%"> <input type="text" size="15" name="Txt_fecha"></td>
+      </tr>
+      <tr> 
+        <td height="25"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Descripci&oacute;n</font></strong></td>
+        <td> <input type="text" size="15" name="Txt_Descripcion"> </td>
+      </tr>
+      <tr> 
+        <td height="28"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Cantidad</font></strong></td>
+        <td><input type="text" size="15" name="Txt_Cantidad"></td>
+      </tr>
+      <tr>
+        <td height="25"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Costo</font></strong></td>
+        <td><input type="text" size="15" name="Txt_Costo"></td>
+      </tr>
+      <tr>
+        <td height="24"><strong><font color="#000099" size="1" face="Verdana, Arial, Helvetica, sans-serif">Observaci&oacute;n</font></strong></td>
+        <td><input type="text" size="15" name="Txt_Observacion"></td>
+      </tr>
+      <tr>
+        <td height="25">&nbsp;</td>
+        <td><input type="hidden" name="comp" value="actualizar"></td>
+      </tr>
+    </table>
+    <input name="Btn_Actualizar2" type="submit" id="Btn_Actualizar22" value="Enviar">
+    <p>&nbsp;<br></p>
+    <p> &nbsp;&nbsp;&nbsp;&nbsp; </p>
+  </form>
+</div>
+<H4 align="center" class="style1">&nbsp;</h4>
+</BODY>
+</HTML>
